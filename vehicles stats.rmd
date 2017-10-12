@@ -1,0 +1,84 @@
+# STA 141 Assignment 1
+
+# #1 what are the dimensions of the dataset?
+```{r}
+
+load("C:/Users/Der-chan/Downloads/vehicles.rda")
+dim(vposts)
+
+```
+
+
+# #2 What are the names of the variables? and what is the class of each variable
+
+```{r}
+sapply(vposts, class)
+names(vposts)
+```
+
+# #3 What is the average price of all the vehicles? the median price? and the deciles? Displays these on a plot of the distribution of vehicle prices.
+```{r}
+#price mean
+mean(vposts$price, na.rm = TRUE)
+#price median
+median(vposts$price, na.rm = TRUE)
+#deciles for vehicle prices
+quantile(vposts$price, c(0, .1, .2, .3, .4, .5, .6, .7, .8, .9 ,1), na.rm = TRUE)
+
+
+## re-did these to account for $1 listings. Sometimes sellers list items at this price to have them show up first on "lowest to highest" price setting
+
+mean(vposts$price[which(vposts$price > 100)], na.rm =TRUE)
+median(vposts$price[which(vposts$price > 100)], na.rm = TRUE)
+quantile(vposts$price[which(vposts$price > 100)], c(0, .1, .2, .3, .4, .5, .6, .7, .8, .9 ,1), na.rm = TRUE)
+```
+
+# #4 What are the different categories of vehicles, i.e. the type variable/column? What is the proportion for each category ?
+```{r}
+levels(vposts$type)
+print(summary(vposts$type[!is.na(vposts$type)])/length(vposts$type[!is.na(vposts$type)]), digits = 3)
+
+##note: I did this first with NA values, but they accounted for 45%, so I removed them
+```
+
+# #6 How many different cities are represented in the dataset?
+
+```{r}
+length(levels(vposts$city))
+```
+
+# #7 Visually display how the number/proportion of "for sale by owner" and "for sale by dealer" varies across city?
+```{r}
+mosaicplot(vposts$city~vposts$byOwner, 
+           main = "Mosaic Plot of Seller vs. City",
+           xlab = "City", ylab = "For Sale By Owner",
+           color = TRUE)
+##comes out at nearly 50% for each
+```
+# #8 What is the largest price for a vehicle in this data set? Examine this and fix the value. Now examine the new highest value for price.
+```{r}
+max(vposts$price, na.rm = TRUE)
+max(vposts$price[which(vposts$price < 600030000)])
+
+quantile(vposts$price[which(vposts$price > 100 & vposts$price < 600030000)], c(0, .1, .2, .3, .4, .5, .6, .7, .8, .9999 ,1), na.rm = TRUE)
+```
+
+
+
+
+#11 Plot the locations of the posts on a map? What do you notice?
+```{r}
+library(maps)
+map('state')
+map('state', c("Massachusetts", "Illinois","Colorado", "Nevada", "New York","California"), add = TRUE, fill = TRUE, col = "red")
+points(vposts$long, vposts$lat, col = "blue", pch = ".")
+##High density of cars for sale in metropolitan areas
+```
+
+
+
+
+
+
+
+
